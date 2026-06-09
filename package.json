@@ -18,9 +18,9 @@
   "homepage": "https://github.com/shamahoque/mern-social",
   "main": "./dist/server.generated.js",
   "scripts": {
-    "development": "nodemon",
-    "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
-    "start": "NODE_ENV=production node ./dist/server.generated.js"
+    "development": "cross-env NODE_OPTIONS=--openssl-legacy-provider nodemon",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.config.client.production.js && cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --mode=production --config webpack.config.server.js",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production node ./dist/server.generated.js"
   },
   "engines": {
     "node": "24.x"
@@ -30,6 +30,7 @@
     "@babel/preset-env": "7.9.0",
     "@babel/preset-react": "7.9.4",
     "babel-loader": "8.1.0",
+    "cross-env": "^10.1.0",
     "file-loader": "6.0.0",
     "nodemon": "2.0.2",
     "webpack": "4.42.1",
