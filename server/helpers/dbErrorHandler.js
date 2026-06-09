@@ -6,7 +6,7 @@
 const getUniqueErrorMessage = (err) => {
     let output
     try {
-        let fieldName = err.message.substring(err.message.lastIndexOf('.$') + 2, err.message.lastIndexOf('_1'))
+        let fieldName = err.message.match(/index: (.*?)_1/)[1]
         output = fieldName.charAt(0).toUpperCase() + fieldName.slice(1) + ' already exists'
     } catch (ex) {
         output = 'Unique field already exists'
@@ -36,7 +36,7 @@ const getErrorMessage = (err) => {
         }
     }
 
-    return message
+    return message || err.message || 'Something went wrong'
 }
 
 export default {getErrorMessage}
