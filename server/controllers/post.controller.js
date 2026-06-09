@@ -39,6 +39,7 @@ const postByID = async (req, res, next, id) => {
     req.post = post
     next()
   }catch(err){
+    console.error("postByID error:", err)
     return res.status('400').json({
       error: "Could not retrieve use post"
     })
@@ -80,9 +81,10 @@ const listNewsFeed = async (req, res) => {
 const remove = async (req, res) => {
   let post = req.post
   try{
-    let deletedPost = await post.remove()
-    res.json(deletedPost)
+    let deletedPost = await Post.deleteOne({ _id: post._id })
+    res.json(post)
   }catch(err){
+    console.error("remove post error:", err)
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)
     })

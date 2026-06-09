@@ -56,9 +56,11 @@ export default function Newsfeed () {
   }
   const removePost = (post) => {
     const updatedPosts = [...posts]
-    const index = updatedPosts.indexOf(post)
-    updatedPosts.splice(index, 1)
-    setPosts(updatedPosts)
+    const index = updatedPosts.findIndex((p) => p._id === post._id)
+    if (index !== -1) {
+      updatedPosts.splice(index, 1)
+      setPosts(updatedPosts)
+    }
   }
 
     return (

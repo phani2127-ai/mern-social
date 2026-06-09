@@ -102,10 +102,12 @@ export default function Profile({ match }) {
     })
   }
   const removePost = (post) => {
-    const updatedPosts = posts
-    const index = updatedPosts.indexOf(post)
-    updatedPosts.splice(index, 1)
-    setPosts(updatedPosts)
+    const updatedPosts = [...posts]
+    const index = updatedPosts.findIndex((p) => p._id === post._id)
+    if (index !== -1) {
+      updatedPosts.splice(index, 1)
+      setPosts(updatedPosts)
+    }
   }
 
     const photoUrl = values.user._id
