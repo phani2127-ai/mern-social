@@ -1,4 +1,5 @@
 import User from '../models/user.model'
+import Notification from '../models/notification.model'
 import extend from 'lodash/extend'
 import errorHandler from './../helpers/dbErrorHandler'
 import formidable from 'formidable'
@@ -89,7 +90,9 @@ const update = (req, res) => {
 const remove = async (req, res) => {
   try {
     let user = req.profile
-    let deletedUser = await user.remove()
+    let deletedUser = await User.deleteOne({ _id: user._id })
+    // In Mongoose 5/6 deleteOne returns { acknowledged: true }, so we assign deletedUser to user to return the removed object.
+    deletedUser = user
     deletedUser.hashed_password = undefined
     deletedUser.salt = undefined
     res.json(deletedUser)
@@ -129,6 +132,13 @@ const addFollower = async (req, res) => {
                             .populate('following', '_id name')
                             .populate('followers', '_id name')
                             .exec()
+      const notification = new Notification({
+        sender: req.body.userId,
+        receiver: req.body.followId,
+        type: 'follow'
+      })
+      await notification.save()
+
       result.hashed_password = undefined
       result.salt = undefined
       res.json(result)

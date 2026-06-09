@@ -1,4 +1,5 @@
 import Post from '../models/post.model'
+import Notification from '../models/notification.model'
 import errorHandler from './../helpers/dbErrorHandler'
 import formidable from 'formidable'
 import fs from 'fs'
@@ -99,6 +100,17 @@ const photo = (req, res, next) => {
 const like = async (req, res) => {
   try{
     let result = await Post.findByIdAndUpdate(req.body.postId, {$push: {likes: req.body.userId}}, {new: true})
+      .populate('postedBy', '_id name')
+      .exec()
+    if (result.postedBy._id.toString() !== req.body.userId.toString()) {
+      const notification = new Notification({
+        sender: req.body.userId,
+        receiver: result.postedBy._id,
+        type: 'like',
+        post: result._id
+      })
+      await notification.save()
+    }
     res.json(result)
   }catch(err){
       return res.status(400).json({
@@ -126,6 +138,15 @@ const comment = async (req, res) => {
                             .populate('comments.postedBy', '_id name')
                             .populate('postedBy', '_id name')
                             .exec()
+    if (result.postedBy._id.toString() !== req.body.userId.toString()) {
+      const notification = new Notification({
+        sender: req.body.userId,
+        receiver: result.postedBy._id,
+        type: 'comment',
+        post: result._id
+      })
+      await notification.save()
+    }
     res.json(result)
   }catch(err){
     return res.status(400).json({
